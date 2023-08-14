@@ -14,7 +14,7 @@ func handleError(err error) {
 }
 
 func main() {
-	file, err := os.Open("./day-01/input.txt")
+	file, err := os.Open("./input.txt")
 	handleError(err)
 	defer file.Close()
 
@@ -27,8 +27,19 @@ func main() {
 		line := scanner.Text()
 		if line == "" {
 			if sum > topMostCalories {
+				if topMostCalories > secondMostCalories {
+					if secondMostCalories > thirdMostCalories {
+						thirdMostCalories = secondMostCalories
+					}
+					secondMostCalories = topMostCalories
+				} else if topMostCalories > thirdMostCalories {
+					thirdMostCalories = topMostCalories
+				}
 				topMostCalories = sum
 			} else if sum > secondMostCalories {
+				if secondMostCalories > thirdMostCalories {
+					thirdMostCalories = secondMostCalories
+				}
 				secondMostCalories = sum
 			} else if sum > thirdMostCalories {
 				thirdMostCalories = sum
