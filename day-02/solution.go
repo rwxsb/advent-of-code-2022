@@ -8,6 +8,7 @@ import (
 
 type Rules struct {
 	beats string
+	loses string
 }
 
 func handleError (err error) {
@@ -31,6 +32,11 @@ func main () {
 	letterToHandMap["B"] = "Paper"
 	letterToHandMap["C"] = "Scissors"
 
+	resultMap := make(map[string]string)
+	resultMap["X"] = "Lose"
+	resultMap["Y"] = "Draw"
+	resultMap["Z"] = "Win"
+
 	file, err := os.Open("./input.txt")	
 	handleError(err)
 	sc := bufio.NewScanner(file)
@@ -39,11 +45,13 @@ func main () {
 	for sc.Scan() {
 		line := sc.Text()
 		round := strings.Split(line, " ")
-		opponnetHand := letterToHandMap[round[0]]
-		myHand := letterToHandMap[round[1]]		
-		roundResult := roundScoreCheat([2]string{opponnetHand, myHand})
-		extraPoints := scoreOfCard[myHand]
-		sum = sum + roundResult + extraPoints
+		opponentHand := letterToHandMap[round[0]]
+		//Part 1 
+		//myHand := letterToHandMap[round[1]]
+		//roundResult := roundScore([2]string{opponentHand, myHand})
+		result := resultMap[round[1]]
+		roundResult := fullRoundScore(opponentHand, result, scoreOfCard)
+		sum = sum + roundResult //+ scoreOfCard[round[1]] 
 	}
 
 	fmt.Printf("%d \n",sum)
@@ -70,25 +78,41 @@ func roundScore (round [2]string) int {
 
 }
 
-
-func roundScoreCheat (round [2]string) int {
+func fullRoundScore (opponentHand string, result string, scoreOfCard map[string]int) int {
 	ruleSet := make(map[string]Rules)
 
-	ruleSet["Rock"] = Rules{ beats: "Scissors"}
-	ruleSet["Paper"] = Rules{ beats: "Rock"} 
-	ruleSet["Scissors"] = Rules{ beats: "Paper"}
+	ruleSet["Rock"] = Rules{ beats: "Scissors", loses: "Paper" }
+	ruleSet["Paper"] = Rules{ beats: "Rock", loses: "Scissors" } 
+	ruleSet["Scissors"] = Rules{ beats: "Paper", loses: "Rock" }
 
+	// return extra points + win, lose
 
-	if round[0] == "Scissor" {
-		return 6
+	myHand := findMyPlay(opponentHand, result, ruleSet)
+	myHandScore := scoreOfCard[myHand] 
+
+	if result == "Win" {
+		return 6 + myHandScore; 
 	}
 
-	if round[0] == "Paper" {
-		return 3
+	if result == "Draw" {
+		return 3 + myHandScore
 	}
 
-	return 0
+	return myHandScore
 
 }    
+
+func findMyPlay(opponentHand string, result string, ruleSet map[string]Rules) string{
+	if result == "Win" {
+		return	ruleSet[opponentHand].loses
+	}
+
+	if result == "Lose" {
+		return ruleSet[opponentHand].beats
+	}
+
+	return opponentHand
+	
+}
 
 
