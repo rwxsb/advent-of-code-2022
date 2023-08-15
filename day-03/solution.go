@@ -61,7 +61,7 @@ func intersectCompartments(firstCompartment, secondCompartment string) StringSet
 
 func calculateRuckSackPriority(commonLetters StringSet) int {
 	sum := 0
-	for k, _ := range commonLetters {
+	for k := range commonLetters {
 		letterPriority := calculateLetterPriority(k)
 		sum = sum + letterPriority
 	}
