@@ -41,19 +41,16 @@ func main () {
 
 	secondSC := bufio.NewScanner(file)
 	linesPerScan := 3
-	currentLineCount := 0
 	var linesBatch []string
 	groupSum := 0
 
 	for secondSC.Scan() {
 		line := secondSC.Text()
 		linesBatch = append(linesBatch, line)
-		currentLineCount++
 
-		if currentLineCount == linesPerScan {
+		if len(linesBatch) == linesPerScan { 
 			groupPriority := findSharedItemTypesAndCalculateGroupPriority(linesBatch)
 			groupSum = groupSum + groupPriority
-			currentLineCount = 0
 			linesBatch = nil
 		}
 
