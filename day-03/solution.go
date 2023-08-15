@@ -18,30 +18,77 @@ func main () {
 	file, err := os.Open("./input.txt")	
 	handleError(err)
 	defer file.Close()
+
+
+	/*
+        PART 1
+
 	sc := bufio.NewScanner(file)
-
 	sum := 0
-
 	for sc.Scan() {
 		line := sc.Text()
 		ruckSackPriority := findSharedItemTypesAndCalculateRucksackPriority(line)
 		sum = sum + ruckSackPriority
 	}
-
 	fmt.Printf(" %d \n", sum)
+	*/
+
+
+	/*
+	PART 2
+	TODO: Try writing customs split function to bufio
+	*/
+
+	secondSC := bufio.NewScanner(file)
+	linesPerScan := 3
+	currentLineCount := 0
+	var linesBatch []string
+	groupSum := 0
+
+	for secondSC.Scan() {
+		line := secondSC.Text()
+		linesBatch = append(linesBatch, line)
+		currentLineCount++
+
+		if currentLineCount == linesPerScan {
+			groupPriority := findSharedItemTypesAndCalculateGroupPriority(linesBatch)
+			groupSum = groupSum + groupPriority
+			currentLineCount = 0
+			linesBatch = nil
+		}
+
+	}
+
+	fmt.Printf(" %d \n", groupSum)
 }
+
+func findSharedItemTypesAndCalculateGroupPriority(group []string) int {
+	partialCommonLetters := intersectStrings(group[0], group[1])
+
+	//Build string from StringSet
+	var thirdRucksack string  = ""
+	for k := range partialCommonLetters {
+		thirdRucksack = thirdRucksack + string(k)
+	}
+
+	allCommonLetters := intersectStrings(thirdRucksack, group[2])
+	groupPriority := calculateStringSetPriority(allCommonLetters)
+
+	return groupPriority
+}
+
 
 func findSharedItemTypesAndCalculateRucksackPriority(rucksack string) int {
 	halfOfLen := len(rucksack) /2
 	firstCompartment := rucksack[0:halfOfLen]
 	secondCompartment := rucksack[halfOfLen:]
-	commonLetters := intersectCompartments(firstCompartment, secondCompartment)
-	ruckSackPriority := calculateRuckSackPriority(commonLetters)
+	commonLetters := intersectStrings(firstCompartment, secondCompartment)
+	ruckSackPriority := calculateStringSetPriority(commonLetters)
 
 	return ruckSackPriority	
 }
 
-func intersectCompartments(firstCompartment, secondCompartment string) StringSet {
+func intersectStrings(firstCompartment, secondCompartment string) StringSet {
 	mapOfFirst := make(map[rune]int)
 	commonLetters := make(StringSet)
 
@@ -59,7 +106,7 @@ func intersectCompartments(firstCompartment, secondCompartment string) StringSet
 	return commonLetters
 }
 
-func calculateRuckSackPriority(commonLetters StringSet) int {
+func calculateStringSetPriority(commonLetters StringSet) int {
 	sum := 0
 	for k := range commonLetters {
 		letterPriority := calculateLetterPriority(k)
