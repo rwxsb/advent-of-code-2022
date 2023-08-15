@@ -39,6 +39,7 @@ func main () {
 
 	file, err := os.Open("./input.txt")	
 	handleError(err)
+	defer file.Close()
 	sc := bufio.NewScanner(file)
 
 	sum := 0
