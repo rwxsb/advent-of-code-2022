@@ -27,9 +27,11 @@ func main () {
 		line := sc.Text()
 		assingments := strings.Split(line, ",")
 		lineCount := compareAssignments(assingments[0],assingments[1])
+		/*	
 		if lineCount == 1 {
 			fmt.Println(line)
 		}
+		*/
 
 		count = count + lineCount
 	}
