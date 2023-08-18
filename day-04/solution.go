@@ -26,7 +26,12 @@ func main () {
 	for sc.Scan() {
 		line := sc.Text()
 		assingments := strings.Split(line, ",")
-		count = count + compareAssignments(assingments[0],assingments[1])
+		lineCount := compareAssignments(assingments[0],assingments[1])
+		if lineCount == 1 {
+			fmt.Println(line)
+		}
+
+		count = count + lineCount
 	}
 
 	fmt.Println(count)
@@ -44,10 +49,15 @@ func compareAssignments(first, second string) int {
 	secondEnd, _ := strconv.ParseInt(secondAssingment[1],10, 64)
 
 	if firstStart <= secondStart && secondEnd <= firstEnd {
-		return 1
+		return 1 
 	} else if secondStart <= firstStart && firstEnd <= secondEnd {
+		return 1 
+	} else if secondStart <= firstEnd && firstStart <= secondStart {
+		return 1
+	} else if firstStart <= secondEnd && secondStart <= firstStart {
 		return 1
 	}
+	
 
 	return 0
 }
