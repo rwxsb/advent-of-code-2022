@@ -23,40 +23,69 @@ func main() {
 
 	for sc.Scan() {
 		line := sc.Text()
+
+		if strings.Contains(line, "1") {
+			for i := 0; i < len(initialBlock); i++ {
+				fmt.Println(initialBlock[i])
+			}
+
+			fmt.Println("----------------")
+
+			initialBlock = transposeBlocks(initialBlock)
+			break
+		}
+
 		row := strings.Split(line, " ")
 		initialBlock = append(initialBlock, row)
 
-		if strings.Contains(line, " 1   2   3   4   5   6   7   8   9 ") {
-			break
-		}
 	}
 
 	for i := 0; i < len(initialBlock); i++ {
-		fmt.Println(initialBlock[i][0])
+		fmt.Println(initialBlock[:][i])
 	}
 
-	fmt.Println("---------------------")
+	//for sc.Scan() {
+	//instructions := sc.Text()
+	//move, from, to := parseInstructions(instructions)
 
-	for i := 0; i < len(initialBlock[0]); i++ {
-		fmt.Println(initialBlock[0][i])
-	}
+	//var i int64
+	//for i = 0; i < move; i++ {
+	//TODO do the operations, you may need to transpose slices
 
-	for sc.Scan() {
-		instructions := sc.Text()
-		move, from, to := parseInstructions(instructions)
+	//}
 
-		var i int64
-		for i = 0; i < move; i++ {
-			//TODO do the operations, you may need to transpose slices
-
-		}
-
-	}
+	//}
 
 	// for i := 0; i < len(initialBlock); i++ {
 	// 	fmt.Println(initialBlock[:][i])
 	// }
 
+}
+
+func transposeBlocks(slice [][]string) [][]string {
+	var column []string
+	var transposedBlocks [][]string = make([][]string, 0)
+
+	for i := 0; i < 9; i++ {
+		column = buildColumn(slice, i)
+		transposedBlocks = append(transposedBlocks, column)
+	}
+
+	return transposedBlocks
+}
+
+func buildColumn(slice [][]string, columnIndex int) (column []string) {
+	// Mixes column index 2 with index 5
+	column = make([]string, 0)
+
+	for _, row := range slice {
+		fmt.Println(row[columnIndex])
+		column = append(column, row[columnIndex])
+
+	}
+	fmt.Println()
+
+	return column
 }
 
 func parseInstructions(instructions string) (move, from, to int64) {
